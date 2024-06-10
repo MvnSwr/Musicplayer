@@ -1,21 +1,7 @@
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
-public class GUI extends JFrame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	Player player = new Player();
-	String[] playlist;
-	private boolean isPlaying = false;
+public class Gui extends JFrame {
 
 	// für Buttons
 	JButton chooseBTN, startstopBTN;
@@ -26,11 +12,15 @@ public class GUI extends JFrame {
 	JMenuItem menuItem1;
 
 	// Constructor
-	public GUI() {
+	public Gui() {
+		this.runGui();
+	}
 
+	private void runGui(){
 		// Create Buttons
 		chooseBTN = addButtons(325, 380, 100, 25, "Get Music");
-		startstopBTN = addButtons(450, 380, 25, 25, "Start");
+		startstopBTN = addButtons(450, 380, 100, 25, "Start");
+
 
 		// Create the Frame
 		this.setTitle("The greatest Musicplayer");
@@ -46,11 +36,10 @@ public class GUI extends JFrame {
 		this.add(startstopBTN);
 
 		// create Buttonfunctionality
-		buttonFunction();
+		// buttonFunction();
 
 		// create DropdownMenu
 		dropdownMenu();
-
 	}
 
 	@SuppressWarnings("unused")
@@ -65,37 +54,29 @@ public class GUI extends JFrame {
 		return btn;
 	}
 
-	private void play(Player mp, int i, String[] playlist) {
-		if (i == 0) {
-			mp.shuffle(playlist);
-		} else if (i == 1) {
-			mp.order(playlist);
-		}
-	}
-
 	// Buttonfunctionality
 
-	private void buttonFunction() {
-		chooseBTN.addActionListener(e -> {
-			String genre = player.dropdownMenu();
-			playlist = player.getMusic(genre);
-		});
+	// private void buttonFunction() {
+	// 	chooseBTN.addActionListener(e -> {
+	// 		String genre = player.dropdownMenu();
+	// 		playlist = player.getMusic(genre);
+	// 	});
 
-		startstopBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Musik wird abgespielt, sobald der Button gedrückt wird
-				if (!isPlaying) {
-					play(player, player.selection(), playlist);
-					startstopBTN.setText("Stop");
-					isPlaying = true;
-				} else {
-					// implementation die Musik zu stopen
-					startstopBTN.setText("start");
-					isPlaying = false;
-				}
-			}
-		});
-	}
+	// 	startstopBTN.addActionListener(new ActionListener() {
+	// 		public void actionPerformed(ActionEvent e) {
+	// 			// Musik wird abgespielt, sobald der Button gedrückt wird
+	// 			if (!isPlaying) {
+	// 				play(player, player.selection(), playlist);
+	// 				startstopBTN.setText("Stop");
+	// 				isPlaying = true;
+	// 			} else {
+	// 				// implementation die Musik zu stopen
+	// 				startstopBTN.setText("start");
+	// 				isPlaying = false;
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 	// Dropdown für sowas wie hier oben links das File Edit Source Refactor ...
 	private void dropdownMenu() {
@@ -117,5 +98,4 @@ public class GUI extends JFrame {
 		// Add the menu to the menu bar
 		menuBar.add(menu);
 	}
-
 }
