@@ -4,12 +4,16 @@ import javax.swing.*;
 public class Gui extends JFrame {
 
 	// für Buttons
-	JButton chooseBTN, startstopBTN;
+	private JButton choose_BTN, 
+					startstop_BTN,
+					start_BTN,
+					stop_BTN,
+					break_BTN;
 
 	// für Dropdown
-	JMenuBar menuBar;
-	JMenu menu;
-	JMenuItem menuItem1;
+	private JMenuBar menuBar;
+	private JMenu menu;
+	private JMenuItem menuItem1;
 
 	// Constructor
 	public Gui() {
@@ -18,8 +22,11 @@ public class Gui extends JFrame {
 
 	private void runGui(){
 		// Create Buttons
-		chooseBTN = addButtons(325, 380, 100, 25, "Get Music");
-		startstopBTN = addButtons(450, 380, 100, 25, "Start");
+		choose_BTN = addButtons(250, 150, 100, 25, "Get Music");
+		startstop_BTN = addButtons(375, 150, 100, 25, "StartStopBTN");
+		start_BTN = addButtons(250, 380, 70, 25, "Start");
+		stop_BTN = addButtons(330, 380, 70, 25, "Stop");
+		break_BTN = addButtons(410, 380, 70, 25, "break");
 
 
 		// Create the Frame
@@ -32,11 +39,15 @@ public class Gui extends JFrame {
 
 		this.setVisible(true);
 		this.setLayout(null);
-		this.add(chooseBTN);
-		this.add(startstopBTN);
+
+		this.add(choose_BTN);
+		this.add(startstop_BTN);
+		this.add(start_BTN);
+		this.add(stop_BTN);
+		this.add(break_BTN);
 
 		// create Buttonfunctionality
-		// buttonFunction();
+		buttonFunction();
 
 		// create DropdownMenu
 		dropdownMenu();
@@ -56,11 +67,27 @@ public class Gui extends JFrame {
 
 	// Buttonfunctionality
 
-	// private void buttonFunction() {
-	// 	chooseBTN.addActionListener(e -> {
-	// 		String genre = player.dropdownMenu();
-	// 		playlist = player.getMusic(genre);
-	// 	});
+	private void buttonFunction() {
+		choose_BTN.addActionListener(e -> {
+			// -- //
+		});
+		
+		startstop_BTN.addActionListener(e -> {
+			// -- //
+		});
+
+		start_BTN.addActionListener(e -> {
+			// -- //
+		});
+
+		stop_BTN.addActionListener(e -> {
+			// -- //
+		});
+
+		break_BTN.addActionListener(e -> {
+			// -- //
+		});
+	}
 
 	// 	startstopBTN.addActionListener(new ActionListener() {
 	// 		public void actionPerformed(ActionEvent e) {
@@ -77,6 +104,8 @@ public class Gui extends JFrame {
 	// 		}
 	// 	});
 	// }
+
+
 
 	// Dropdown für sowas wie hier oben links das File Edit Source Refactor ...
 	private void dropdownMenu() {

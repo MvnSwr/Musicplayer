@@ -17,12 +17,16 @@ public class Musicplayer{
         clip.open(audioStream);
     }
 
-    public static void start(){
+    static void start(){
         clip.start();
     }
 
-    public static void stop(){
+    static void stop(){
         clip.stop();
+    }
+
+    static void flush(){
+        clip.flush();
     }
 
     public static void test(){
