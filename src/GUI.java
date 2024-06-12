@@ -1,19 +1,22 @@
 import java.awt.*;
 import javax.swing.*;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 
 public class Gui extends JFrame {
 
-	// für Buttons
-	private JButton choose_BTN, 
-					startstop_BTN,
+	// Buttons
+	private Button  choose_BTN,
 					start_BTN,
 					stop_BTN,
-					break_BTN;
+					break_BTN,
+					test_BTN;
 
-	// für Dropdown
-	private JMenuBar menuBar;
-	private JMenu menu;
-	private JMenuItem menuItem1;
+	// Dropdown
+	// private JMenuBar menuBar;
+	// private JMenu menu;
+	// private JMenuItem menuItem1;
 
 	// Constructor
 	public Gui() {
@@ -22,11 +25,11 @@ public class Gui extends JFrame {
 
 	private void runGui(){
 		// Create Buttons
-		choose_BTN = addButtons(250, 150, 100, 25, "Get Music");
-		startstop_BTN = addButtons(375, 150, 100, 25, "StartStopBTN");
-		start_BTN = addButtons(250, 380, 70, 25, "Start");
-		stop_BTN = addButtons(330, 380, 70, 25, "Stop");
-		break_BTN = addButtons(410, 380, 70, 25, "break");
+		choose_BTN = new Button(250, 150, 100, 25, "Get Music");
+		start_BTN = new Button(250, 380, 70, 25, "Start");
+		stop_BTN = new Button(330, 380, 70, 25, "Stop");
+		break_BTN = new Button(410, 380, 70, 25, "break");
+		test_BTN = new Button(375, 150, 100, 25, "Test");
 
 
 		// Create the Frame
@@ -34,58 +37,62 @@ public class Gui extends JFrame {
 		this.setSize(720, 460);
 		this.setResizable(false);
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // funktioniert nicht so ganz
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(new Color(0x82A3AC));
 
 		this.setVisible(true);
 		this.setLayout(null);
 
-		this.add(choose_BTN);
-		this.add(startstop_BTN);
-		this.add(start_BTN);
-		this.add(stop_BTN);
-		this.add(break_BTN);
+		this.add(choose_BTN.getButton());
+		this.add(start_BTN.getButton());
+		this.add(stop_BTN.getButton());
+		this.add(break_BTN.getButton());
+		this.add(test_BTN.getButton());
 
 		// create Buttonfunctionality
 		buttonFunction();
 
 		// create DropdownMenu
-		dropdownMenu();
-	}
-
-	@SuppressWarnings("unused")
-	// Create Button Methods
-	private JButton addButtons(int x, int y, int width, int height) {
-		return addButtons(x, y, width, height, "Standard");
-	}
-
-	private JButton addButtons(int x, int y, int width, int height, String name) {
-		JButton btn = new JButton(name);
-		btn.setBounds(x, y, width, height);
-		return btn;
+		// dropdownMenu();
 	}
 
 	// Buttonfunctionality
 
 	private void buttonFunction() {
-		choose_BTN.addActionListener(e -> {
-			// -- //
-		});
-		
-		startstop_BTN.addActionListener(e -> {
-			// -- //
-		});
-
-		start_BTN.addActionListener(e -> {
-			// -- //
+		choose_BTN.getButton().addActionListener(e -> {
+			try {
+				Musicplayer.loadNext("C:/Users/marvi/OneDrive/Laptop/Programmieren/Musicplayer/Music/Techno/SexyBitchRemix.wav");
+			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException err) {
+				err.printStackTrace();
+			}
 		});
 
-		stop_BTN.addActionListener(e -> {
-			// -- //
+		start_BTN.getButton().addActionListener(e -> {
+			try {
+				Musicplayer.start();
+			} catch (NullPointerException err) {
+				System.err.println("Es wurde noch keine Musik in den clip geladen! Keine Funktion ausgeführt");
+			}
 		});
 
-		break_BTN.addActionListener(e -> {
-			// -- //
+		stop_BTN.getButton().addActionListener(e -> {
+			try {
+				Musicplayer.stop();
+			} catch (NullPointerException err) {
+				System.out.println("Keine Musik in clip geladen! Keine Funktion ausgeführt");
+			}
+		});
+
+		break_BTN.getButton().addActionListener(e -> {
+			try {
+				Musicplayer.flush();
+			} catch (NullPointerException err) {
+				System.out.println("Keine Musik in clip geladen! Keine Funktion ausgeführt");
+			}
+		});
+
+		test_BTN.getButton().addActionListener(e -> {
+			Musicplayer.test();
 		});
 	}
 
@@ -108,23 +115,23 @@ public class Gui extends JFrame {
 
 
 	// Dropdown für sowas wie hier oben links das File Edit Source Refactor ...
-	private void dropdownMenu() {
-		// Create the dropdown
-		menuBar = new JMenuBar();
-		menu = new JMenu("File");
+// 	private void dropdownMenu() {
+// 		// Create the dropdown
+// 		menuBar = new JMenuBar();
+// 		menu = new JMenu("File");
 
-		// Create menu items
-		menuItem1 = new JMenuItem("getMusic");
-//		JMenuItem menuItem2 = new JMenuItem("Save");
-//		JMenuItem menuItem3 = new JMenuItem("Exit");
+// 		// Create menu items
+// 		menuItem1 = new JMenuItem("getMusic");
+// //		JMenuItem menuItem2 = new JMenuItem("Save");
+// //		JMenuItem menuItem3 = new JMenuItem("Exit");
 
-		// Add menu items to the menu
-		menu.add(menuItem1);
-//		menu.add(menuItem2);
-		menu.addSeparator(); // Add a separator between menu items
-//		menu.add(menuItem3);
+// 		// Add menu items to the menu
+// 		menu.add(menuItem1);
+// //		menu.add(menuItem2);
+// 		menu.addSeparator(); // Add a separator between menu items
+// //		menu.add(menuItem3);
 
-		// Add the menu to the menu bar
-		menuBar.add(menu);
-	}
+// 		// Add the menu to the menu bar
+// 		menuBar.add(menu);
+	// }
 }
