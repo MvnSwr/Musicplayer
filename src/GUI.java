@@ -13,6 +13,17 @@ public class Gui extends JFrame {
 					break_BTN,
 					test_BTN;
 
+	private Thread thread = new Thread(() -> {
+		while(true){
+			System.out.println(Musicplayer.isEmpty() + "\n" + Musicplayer.isEmpty2());
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException err) {
+				err.printStackTrace();
+			}
+		}
+	});
+
 	// Dropdown
 	// private JMenuBar menuBar;
 	// private JMenu menu;
@@ -51,9 +62,6 @@ public class Gui extends JFrame {
 
 		// create Buttonfunctionality
 		buttonFunction();
-
-		// create DropdownMenu
-		// dropdownMenu();
 	}
 
 	// Buttonfunctionality
@@ -61,7 +69,7 @@ public class Gui extends JFrame {
 	private void buttonFunction() {
 		choose_BTN.getButton().addActionListener(e -> {
 			try {
-				Musicplayer.loadNext("C:/Users/marvi/OneDrive/Laptop/Programmieren/Musicplayer/Music/Techno/SexyBitchRemix.wav");
+				Musicplayer.loadNext(Music.getSong());
 			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException err) {
 				err.printStackTrace();
 			}
@@ -70,12 +78,14 @@ public class Gui extends JFrame {
 		start_BTN.getButton().addActionListener(e -> {
 			try {
 				Musicplayer.start();
+				
+				thread.start();
 			} catch (NullPointerException err) {
 				System.err.println("Es wurde noch keine Musik in den clip geladen! Keine Funktion ausgeführt");
 			}
 		});
 
-		stop_BTN.getButton().addActionListener(e -> {
+		stop_BTN.getButton().addActionListener(e -> { //Idee: alles was mit Music zu tun hat in einem Thread laufen zu lassen. Wenn stop, dann Thread anhalten. Sonst soll im Thread automatisch überprüft werden, ob der clip noch active ist. Sonst den näschten Song laden. Oder BESSER, die Überprüfung in einem Thread laufen lassen und beim stoppen diesen Thread einfach anhalten
 			try {
 				Musicplayer.stop();
 			} catch (NullPointerException err) {
@@ -92,7 +102,7 @@ public class Gui extends JFrame {
 		});
 
 		test_BTN.getButton().addActionListener(e -> {
-			Musicplayer.test();
+			Music.load();
 		});
 	}
 

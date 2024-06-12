@@ -25,22 +25,15 @@ public class Musicplayer{
         clip.stop();
     }
 
-    static void flush(){ // Flush erfüllt nicht das, was ich wollte
+    static void flush(){
         clip.close();
     }
 
-    public static void test(){
-        try {
-            loadNext("C:/Users/marvi/OneDrive/Laptop/Programmieren/Musicplayer/Music/Techno/SexyBitchRemix.wav");
-            clip.start();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            clip.close();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
+    static boolean isEmpty(){
+        return clip.isRunning();
+    }
+
+    static boolean isEmpty2(){
+        return clip.isActive();
     }
 }
