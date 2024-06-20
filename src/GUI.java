@@ -1,11 +1,15 @@
 import java.awt.*;
 import javax.swing.*;
+
+import Repository.Button;
+import Repository.NoRemainingSongException;
+
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
 public class Gui extends JFrame {
-
+ //GUI wirklich in eine eigene Klasse auslagern. Hier ist viel zu viel Logik drinne
 	// Buttons
 	private Button  choose_BTN,
 					start_BTN,
@@ -15,9 +19,19 @@ public class Gui extends JFrame {
 
 	private Thread thread = new Thread(() -> {
 		while(true){
-			System.out.println(Musicplayer.isEmpty() + "\n" + Musicplayer.isEmpty2());
+			System.out.println(Musicplayer.isEmpty());
+			if(Musicplayer.isEmpty()){
+				try {
+					Musicplayer.loadNext(Music.getSong());
+				}catch(NoRemainingSongException err) {
+					err.printStackTrace();
+				}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
+					err.printStackTrace();
+				}
+				Musicplayer.start();
+			}
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(500);
 			} catch (InterruptedException err) {
 				err.printStackTrace();
 			}
@@ -31,6 +45,7 @@ public class Gui extends JFrame {
 
 	// Constructor
 	public Gui() {
+		Music.load();
 		this.runGui();
 	}
 
@@ -70,7 +85,9 @@ public class Gui extends JFrame {
 		choose_BTN.getButton().addActionListener(e -> {
 			try {
 				Musicplayer.loadNext(Music.getSong());
-			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException err) {
+			}catch(NoRemainingSongException err) {
+				err.printStackTrace();
+			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
 				err.printStackTrace();
 			}
 		});
@@ -85,7 +102,7 @@ public class Gui extends JFrame {
 			}
 		});
 
-		stop_BTN.getButton().addActionListener(e -> { //Idee: alles was mit Music zu tun hat in einem Thread laufen zu lassen. Wenn stop, dann Thread anhalten. Sonst soll im Thread automatisch überprüft werden, ob der clip noch active ist. Sonst den näschten Song laden. Oder BESSER, die Überprüfung in einem Thread laufen lassen und beim stoppen diesen Thread einfach anhalten
+		stop_BTN.getButton().addActionListener(e -> {
 			try {
 				Musicplayer.stop();
 			} catch (NullPointerException err) {
@@ -102,7 +119,13 @@ public class Gui extends JFrame {
 		});
 
 		test_BTN.getButton().addActionListener(e -> {
-			Music.load();
+			try {
+				Music.lastTitle();
+			}catch(NoRemainingSongException err) {
+				err.printStackTrace();
+			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
+				err.printStackTrace();
+			}
 		});
 	}
 

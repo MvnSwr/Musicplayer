@@ -1,3 +1,4 @@
+package Repository;
 import javax.swing.*;
 
 public class Button {
@@ -13,7 +14,7 @@ public class Button {
 		button.setBounds(x, y, width, height);
     }
 
-    JButton getButton(){
+    public JButton getButton(){
         return button;
     }
 }

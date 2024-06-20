@@ -30,10 +30,6 @@ public class Musicplayer{
     }
 
     static boolean isEmpty(){
-        return clip.isRunning();
-    }
-
-    static boolean isEmpty2(){
-        return clip.isActive();
+        return clip.getMicrosecondPosition() == clip.getMicrosecondLength();
     }
 }
