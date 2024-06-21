@@ -17,10 +17,7 @@ public class Music {
 	private static int pointer = -1;
     
 	static String getSong() throws NoRemainingSongException{
-		if (tracksAll.isEmpty()){
-			throw new NoRemainingSongException();
-		}
-        return getSong(random.nextInt(tracksAll.size()));
+		return (queue.get(pointer += 1) != null) ? queue.get(++pointer).titel() : getSong(random.nextInt(tracksAll.size())); //Testen
 	}
 
     static void load(){
@@ -49,7 +46,10 @@ public class Music {
 		}
 	}
 
-	private static String getSong(int n){
+	private static String getSong(int n) throws NoRemainingSongException{
+		if (tracksAll.isEmpty()){
+			throw new NoRemainingSongException();
+		}
 		queue.add(tracksAll.remove(n));
 		return queue.get(++pointer).titel();
 	}
