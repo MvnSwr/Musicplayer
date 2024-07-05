@@ -1,4 +1,4 @@
-package Repository;
+package Exceptions;
 public class NoRemainingSongException extends Exception{
     public NoRemainingSongException(){
         System.err.println("no remaining song!");

@@ -1,3 +1,4 @@
+package Controller;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,19 +18,19 @@ public class Musicplayer{
         clip.open(audioStream);
     }
 
-    static void start(){
+    public static void start(){
         clip.start();
     }
 
-    static void stop(){
+    public static void stop(){
         clip.stop();
     }
 
-    static void flush(){
+    public static void flush(){
         clip.close();
     }
 
-    static boolean isEmpty(){
+    public static boolean isEmpty(){
         return clip.getMicrosecondPosition() == clip.getMicrosecondLength();
     }
 }

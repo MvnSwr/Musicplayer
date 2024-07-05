@@ -1,8 +1,11 @@
+package View;
 import java.awt.*;
 import javax.swing.*;
 
-import Repository.Button;
-import Repository.NoRemainingSongException;
+import Model.Button;
+import Model.Playlist;
+import Controller.Musicplayer;
+import Exceptions.NoRemainingSongException;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -22,7 +25,7 @@ public class Gui extends JFrame {
 			System.out.println(Musicplayer.isEmpty());
 			if(Musicplayer.isEmpty()){
 				try {
-					Musicplayer.loadNext(Music.getSong());
+					Musicplayer.loadNext(Playlist.getSong());
 				}catch(NoRemainingSongException err) {
 					err.printStackTrace();
 				}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
@@ -45,7 +48,7 @@ public class Gui extends JFrame {
 
 	// Constructor
 	public Gui() {
-		Music.load();
+		Playlist.load();
 		this.runGui();
 	}
 
@@ -84,7 +87,7 @@ public class Gui extends JFrame {
 	private void buttonFunction() {
 		choose_BTN.getButton().addActionListener(e -> {
 			try {
-				Musicplayer.loadNext(Music.getSong());
+				Musicplayer.loadNext(Playlist.getSong());
 			}catch(NoRemainingSongException err) {
 				err.printStackTrace();
 			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
@@ -120,7 +123,7 @@ public class Gui extends JFrame {
 
 		test_BTN.getButton().addActionListener(e -> {
 			try {
-				Music.lastTitle();
+				Playlist.lastTitle();
 			}catch(NoRemainingSongException err) {
 				err.printStackTrace();
 			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
