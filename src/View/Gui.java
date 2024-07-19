@@ -3,7 +3,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import Model.Button;
-import Model.Playlist;
+import Model.Playlistss;
 import Controller.Musicplayer;
 import Exceptions.NoRemainingSongException;
 
@@ -25,7 +25,7 @@ public class Gui extends JFrame {
 			System.out.println(Musicplayer.isEmpty());
 			if(Musicplayer.isEmpty()){
 				try {
-					Musicplayer.loadNext(Playlist.getSong());
+					Musicplayer.loadNext(Playlistss.getSong());
 				}catch(NoRemainingSongException err) {
 					err.printStackTrace();
 				}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
@@ -48,7 +48,7 @@ public class Gui extends JFrame {
 
 	// Constructor
 	public Gui() {
-		Playlist.load();
+		Playlistss.load();
 		this.runGui();
 	}
 
@@ -87,7 +87,7 @@ public class Gui extends JFrame {
 	private void buttonFunction() {
 		choose_BTN.getButton().addActionListener(e -> {
 			try {
-				Musicplayer.loadNext(Playlist.getSong());
+				Musicplayer.loadNext(Playlistss.getSong());
 			}catch(NoRemainingSongException err) {
 				err.printStackTrace();
 			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){
@@ -123,7 +123,7 @@ public class Gui extends JFrame {
 
 		test_BTN.getButton().addActionListener(e -> {
 			try {
-				Playlist.lastTitle();
+				Playlistss.lastTitle();
 			}catch(NoRemainingSongException err) {
 				err.printStackTrace();
 			}catch(UnsupportedAudioFileException | IOException | LineUnavailableException err){

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Playlist {
+public class Playlistss {
     private List<TrackRecord> list;
     private int pointer;
     private static Random random;
     private String name;
 
-    public Playlist(String name){
+    public Playlistss(String name){
         this.name = name;
         list = new ArrayList<>();
         pointer = -1;
