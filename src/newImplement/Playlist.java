@@ -11,13 +11,13 @@ public class Playlist {
     private String name;
     private Random random;
 
-    public Playlist(String name){
+    public Playlist(String directory, String name){
         this.name = name;
         this.listOfSongs = new ArrayList<>();
         this.pointer = -1;
         this.random = new Random();
 
-        fillListOfSongs(name);
+        fillListOfSongs(directory, name);
     }
 
     public SongRecord getRandomSong(){
@@ -40,8 +40,8 @@ public class Playlist {
         return name;
     }
 
-    private void fillListOfSongs(String name){
-        File root = new File("C:/Users/marvi/OneDrive/Laptop/Programmieren/Musicplayer/Music/" + name);
+    private void fillListOfSongs(String directory, String name){
+        File root = new File(directory + name);
         if (root.exists() && root.isDirectory()) {
             getFiles(root.listFiles());  
         }
