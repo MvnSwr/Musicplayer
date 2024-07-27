@@ -1,9 +1,13 @@
-package Model;
+package newImplement;
 import javax.swing.*;
 
-public class Button {
+public class Button{
 
     private JButton button;
+
+    public JButton getButton(){
+        return this.button;
+    }
     
     public Button(int x, int y, int width, int height){
         this(x, y, width, height, "Standard");
@@ -14,7 +18,5 @@ public class Button {
 		button.setBounds(x, y, width, height);
     }
 
-    public JButton getButton(){
-        return button;
-    }
+    private void setButtonFunctionality(){} //Überlegung als Lambda in der Factory
 }
