@@ -17,6 +17,4 @@ public class Button{
         button = new JButton(name);
 		button.setBounds(x, y, width, height);
     }
-
-    private void setButtonFunctionality(){} //Überlegung als Lambda in der Factory
 }

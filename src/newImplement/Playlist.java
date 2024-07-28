@@ -11,13 +11,13 @@ public class Playlist {
     private String name;
     private Random random;
 
-    public Playlist(String directory, String name){
-        this.name = name;
+    public Playlist(String directory){
+        this.name = getNameOfPlaylist(directory, '\\');
         this.listOfSongs = new ArrayList<>();
         this.pointer = -1;
         this.random = new Random();
 
-        fillListOfSongs(directory, name);
+        fillListOfSongs(directory); //name ist noch der ganze Pfad
     }
 
     public SongRecord getRandomSong(){
@@ -40,8 +40,8 @@ public class Playlist {
         return name;
     }
 
-    private void fillListOfSongs(String directory, String name){
-        File root = new File(directory + name);
+    private void fillListOfSongs(String directory){
+        File root = new File(directory);
         if (root.exists() && root.isDirectory()) {
             getFiles(root.listFiles());  
         }
@@ -55,6 +55,14 @@ public class Playlist {
                 listOfSongs.add(new SongRecord(file.getAbsolutePath()));
             }
         }
+    }
+
+    public static String getNameOfPlaylist(String input, char separator) {
+        int lastIndex = input.lastIndexOf(separator);
+        if (lastIndex == -1) {
+            return input;
+        }
+        return input.substring(lastIndex + 1);
     }
 
 }
