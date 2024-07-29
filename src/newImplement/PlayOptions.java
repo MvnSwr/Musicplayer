@@ -104,8 +104,20 @@ public class PlayOptions {
         return directory;
     }
 
-    public void setCurrentPlaylist(){
-        currentPlayList = playlists.get(0);//Überarbeiten
+    public void setCurrentPlaylist(String name){
+        playlists.forEach(e -> {
+            if(e.getName().equals(name)){
+                currentPlayList = e;
+            }
+        });
+    }
+
+    public List<String> getPlaylistNames(){
+        List<String> names = new ArrayList<>();
+        playlists.forEach(e -> {
+            names.add(e.getName());
+        });
+        return names;
     }
 
     private void loadSong() throws UnsupportedAudioFileException,IOException,LineUnavailableException{

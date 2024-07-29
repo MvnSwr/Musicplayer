@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.FilerException;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
+
+import java.awt.event.*;
 
 public class GuiFactory {
     private static GuiFactory guiFactory;
@@ -82,7 +87,11 @@ public class GuiFactory {
         });
 
         selectPlaylistButton.getButton().addActionListener(e -> {
-            PlayOptions.getPlayOptions().setCurrentPlaylist(); //Überarbeiten
+            SwingUtilities.invokeLater(() -> {
+                BoxSelectorMaske boxSelectorMaske = new BoxSelectorMaske(PlayOptions.getPlayOptions().getPlaylistNames());
+                boxSelectorMaske.setSize(300,200);
+                boxSelectorMaske.setVisible(true);
+            });
         });
 
         shuffleButton.getButton().addActionListener(e -> {
