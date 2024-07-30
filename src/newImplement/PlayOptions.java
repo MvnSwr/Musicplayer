@@ -12,28 +12,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class PlayOptions {
-    class UpdateThread extends Thread{
-        private volatile boolean running = true;
-
-        @Override
-        public void run() {
-            while (running) {
-                PlayOptions.getPlayOptions().update();
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        }
-
-        public void stopRunning() {
-            running = false;
-            this.interrupt();
-        }
-    }
-
+    
     private List<Playlist> playlists;
     private Playlist currentPlayList;
     private static PlayOptions playOptions;
@@ -43,27 +22,17 @@ public class PlayOptions {
     private UpdateThread updateThread;
 
     public PlayOptions(){
-        setPlaylists();
-    }
-
-    public PlayOptions(String directory){
-        this.directory = directory;
-        setPlaylists();
     }
 
     public static PlayOptions getPlayOptions(){
         return playOptions == null ? playOptions = new PlayOptions() : playOptions;
     }
 
-    public static PlayOptions getPlayOptions(String directory){
-        return playOptions == null ? playOptions = new PlayOptions(directory) : playOptions;
-    }
-
     //Läuft über Buttonaufruf
     //ALLES TODO
     public void startSong(){
         if(clip == null){
-            this.loadSongHandler();
+            this.loadSong();
         }
         updateThread = new UpdateThread();
         updateThread.start();
@@ -79,14 +48,44 @@ public class PlayOptions {
             //nothing to see here
         }
     }
-    public void repeatSong(){}
-    public void lastSong(){}
-    public void skipSong(){
-        this.stopSong();
-        this.loadSongHandler();
-        this.startSong();
+
+    public void repeatSong(){
+        try{
+            if(clip.isOpen()){
+                this.stopSong();
+                clip.close();
+            }
+            clip.open(AudioSystem.getAudioInputStream(new File(currentPlayList.getCurrentSongRepeat().title())));
+            this.startSong();
+        }catch(NullPointerException e){
+        }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
+            e.printStackTrace();
+        }
     }
-    public void clearCache(){}
+
+    public void lastSong(){
+        try{
+            if(clip.isOpen()){
+                this.stopSong();
+                clip.close();
+            }
+            clip.open(AudioSystem.getAudioInputStream(new File(currentPlayList.getLastSong().title())));
+            this.startSong();
+        }catch(NullPointerException e){
+        }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void skipSong(){
+        try{
+            this.stopSong();
+            this.loadSong();
+            this.startSong();
+        }catch(NullPointerException e){
+        }
+        
+    }
 
     //Ende ToDo
     public void shuffleSwitch(){
@@ -96,13 +95,9 @@ public class PlayOptions {
     public void setDirectory(String directory){
         this.directory = directory;
         setPlaylists(); //bei neuem directory sollen direkt die Playlists gesetzt werden
-    } // "C:/Users/marvi/OneDrive/Laptop/Programmieren/Musicplayer/Music/"
+    }
 
     // Ende "Läuft pber Buttonaufruf"
-
-    public String getDirectory(){
-        return directory;
-    }
 
     public void setCurrentPlaylist(String name){
         playlists.forEach(e -> {
@@ -120,28 +115,15 @@ public class PlayOptions {
         return names;
     }
 
-    private void loadSong() throws UnsupportedAudioFileException,IOException,LineUnavailableException{
-        AudioInputStream audioStream = 
-                         isOnShuffle == true ? AudioSystem.getAudioInputStream(new File(currentPlayList.getRandomSong().title())) 
-                                             : AudioSystem.getAudioInputStream(new File(currentPlayList.getNextSongInLine().title()));
-        clip = AudioSystem.getClip();
-        clip.open(audioStream);
-    }
-
-    private void loadSongHandler(){
-        try {
-            this.loadSong();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+    private void loadSong(){
+        try{
+            AudioInputStream audioStream = 
+                            isOnShuffle == true ? AudioSystem.getAudioInputStream(new File(currentPlayList.getRandomSong().title())) 
+                                                : AudioSystem.getAudioInputStream(new File(currentPlayList.getNextSongInLine().title()));
+            clip = AudioSystem.getClip();
+            clip.open(audioStream);
+        }catch(UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void update(){
-        System.out.println(clip.getMicrosecondPosition() + " von " + clip.getMicrosecondLength());
-        if(clip.getMicrosecondPosition() == clip.getMicrosecondLength()){
-            this.stopSong();
-            this.loadSongHandler();
-            this.startSong();
         }
     }
 
@@ -155,6 +137,15 @@ public class PlayOptions {
             if(files.isDirectory()){
                 playlists.add(new Playlist(files.toString())); // files.toString gibt den ganzen Pfad bis zur "Playlist" an
             }
+        }
+    }
+
+    protected void update(){
+        System.out.println(clip.getMicrosecondPosition() + " von " + clip.getMicrosecondLength());
+        if(clip.getMicrosecondPosition() == clip.getMicrosecondLength()){
+            this.stopSong();
+            this.loadSong();
+            this.startSong();
         }
     }
 }

@@ -4,14 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.FilerException;
-
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
-
-import java.awt.event.*;
 
 public class GuiFactory {
     private static GuiFactory guiFactory;
@@ -22,7 +16,7 @@ public class GuiFactory {
     private Button startStopButton;
     private Button skipButton;
     private Button repeatButton;
-    private Button lastSongButton;
+    private Button lastSongButton; // doppelt belegen und erst ab einer gewissen audiolength erst den letzten song spielen, sonst einfach repeat song
     private Button setDirectoryButton;
     private Button selectPlaylistButton;
     private Button shuffleButton;
@@ -35,20 +29,26 @@ public class GuiFactory {
         allButtons = new ArrayList<>();
         startStopSwitch = false;
 
-        allButtons.add(startStopButton = new Button(250, 380, 70, 25, "start/stop"));
-        allButtons.add(skipButton = new Button(410, 380, 70, 25, "skip"));
-        allButtons.add(repeatButton = new Button(280, 300, 70, 25, "repeat"));
-        allButtons.add(lastSongButton = new Button(360, 300, 70, 25, "lastSong"));
-        allButtons.add(setDirectoryButton = new Button(250, 150, 100, 25, "Set Directory"));
-        allButtons.add(selectPlaylistButton = new Button(490, 380, 70, 25, "select Playlist"));
-        allButtons.add(shuffleButton = new Button(570, 380, 70, 25, "shuffle"));
+        allButtons.add(startStopButton = new Button(180, 380, 70, 25, "start"));
+        allButtons.add(skipButton = new Button(280, 380, 70, 25, "skip"));
+        allButtons.add(repeatButton = new Button(250, 300, 90, 25, "repeat"));
+        allButtons.add(lastSongButton = new Button(360, 300, 130, 25, "lastSong"));
+        allButtons.add(setDirectoryButton = new Button(250, 150, 120, 25, "Set Directory"));
+        allButtons.add(selectPlaylistButton = new Button(420, 380, 140, 25, "select Playlist"));
+        allButtons.add(shuffleButton = new Button(570, 380, 90, 25, "shuffle"));
 
         //Set Button functionality
         startStopButton.getButton().addActionListener(e -> {
             if(!startStopSwitch){
-                PlayOptions.getPlayOptions().startSong();
+                try{
+                    PlayOptions.getPlayOptions().startSong();
+                    allButtons.add(0, startStopButton = new Button(250, 380, 70, 25, "stop"));
+                }catch(NullPointerException err){ //Das mit dem Button funktioniert noch nicht..
+                    return;
+                }
             }else{
                 PlayOptions.getPlayOptions().stopSong();
+                allButtons.add(0,startStopButton = new Button(250, 380, 70, 25, "start"));
             }
             startStopSwitch = !startStopSwitch;            
         });
@@ -75,11 +75,7 @@ public class GuiFactory {
                 int result = chooser.showOpenDialog(null); //result is an enum of what the user did
                 
                 if(result == JFileChooser.APPROVE_OPTION){
-                    try{
-                        PlayOptions.getPlayOptions().setDirectory(chooser.getSelectedFile().getAbsolutePath() + "/");
-                    }catch(NullPointerException err){
-                        PlayOptions.getPlayOptions(chooser.getSelectedFile().getAbsolutePath() + "/");
-                    }
+                    PlayOptions.getPlayOptions().setDirectory(chooser.getSelectedFile().getAbsolutePath() + "/");
                 }
             }catch(Exception err){
                 err.printStackTrace();

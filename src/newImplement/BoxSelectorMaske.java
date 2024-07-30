@@ -10,36 +10,36 @@ import java.util.List;
 
 public class BoxSelectorMaske extends JFrame{
 
-    private JComboBox<String> boxOfPlaylists = new JComboBox<>();
-    private String choosenPlaylist;
+    private JComboBox<String> boxOflists = new JComboBox<>();
+    private String choosenElement;
 
-    public BoxSelectorMaske(List<String> playlists){
-        playlists.forEach(e -> {
-            boxOfPlaylists.addItem(e);
+    public BoxSelectorMaske(List<String> list){
+        list.forEach(e -> {
+            boxOflists.addItem(e);
         });
 
-        boxOfPlaylists.addActionListener(e -> {
-            choosenPlaylist = ((JComboBox<?>)e.getSource()).getSelectedItem().toString();
+        boxOflists.addActionListener(e -> {
+            choosenElement = ((JComboBox<?>)e.getSource()).getSelectedItem().toString();
         });
 
         JButton accept = new JButton("Accept");
 
         accept.addActionListener(e -> {
-            if (choosenPlaylist != null) {
-                PlayOptions.getPlayOptions().setCurrentPlaylist(choosenPlaylist);
+            if (choosenElement != null) {
+                PlayOptions.getPlayOptions().setCurrentPlaylist(choosenElement);
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Please select a playlist first.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please select a Item first.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         this.setLayout(new FlowLayout());
-        this.add(boxOfPlaylists);
+        this.add(boxOflists);
         this.add(accept);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    public String getChoosenPlaylist(){
-        return choosenPlaylist != null ? choosenPlaylist : "";
+    public String getchoosenElement(){
+        return choosenElement != null ? choosenElement : "";
     }
 }
