@@ -1,11 +1,12 @@
 package newImplement;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Playlist {
+public class Playlist{
     private List<SongRecord> listOfSongs;
     private List<SongRecord> queue;
     private int pointer;

@@ -1,6 +1,6 @@
 package newImplement;
 
-public class UpdateThread extends Thread{
+public class MusicUpdateThread extends Thread{
     private volatile boolean running = true;
 
     @Override

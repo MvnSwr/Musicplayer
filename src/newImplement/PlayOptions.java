@@ -2,6 +2,12 @@ package newImplement;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +17,18 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class PlayOptions {
+public class PlayOptions{
     
+    private static PlayOptions playOptions;
     private List<Playlist> playlists;
     private Playlist currentPlayList;
-    private static PlayOptions playOptions;
     private String directory; // full path to the musicdirectories incl. "/"
     private Clip clip;
     private Boolean isOnShuffle = false;
-    private UpdateThread updateThread;
+    private MusicUpdateThread updateThread;
 
     public PlayOptions(){
+        //this.load();
     }
 
     public static PlayOptions getPlayOptions(){
@@ -34,7 +41,7 @@ public class PlayOptions {
         if(clip == null){
             this.loadSong();
         }
-        updateThread = new UpdateThread();
+        updateThread = new MusicUpdateThread();
         updateThread.start();
         clip.start();
     }
@@ -146,6 +153,37 @@ public class PlayOptions {
             this.stopSong();
             this.loadSong();
             this.startSong();
+        }
+    }
+
+    protected void safe(){
+        try{
+            FileOutputStream fos = new FileOutputStream("Cache.tmp");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(playOptions);
+            oos.close();
+        }catch(NotSerializableException e){
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void load(){
+        try {
+            FileInputStream fis = new FileInputStream("Cache.tmp");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            playOptions = (PlayOptions) ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    protected void deleteSafedCache(){
+        File file = new File("Cache.tmp");
+        if(file.exists()){
+            file.delete();
         }
     }
 }

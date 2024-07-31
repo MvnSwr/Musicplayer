@@ -21,50 +21,70 @@ public class GuiFactory {
     private Button selectPlaylistButton;
     private Button shuffleButton;
 
-    public Button getSetDirectoryButton() {
-        return setDirectoryButton;
-    }
-
     public GuiFactory(){
         allButtons = new ArrayList<>();
         startStopSwitch = false;
 
-        allButtons.add(startStopButton = new Button(180, 380, 70, 25, "start"));
-        allButtons.add(skipButton = new Button(280, 380, 70, 25, "skip"));
-        allButtons.add(repeatButton = new Button(250, 300, 90, 25, "repeat"));
-        allButtons.add(lastSongButton = new Button(360, 300, 130, 25, "lastSong"));
-        allButtons.add(setDirectoryButton = new Button(250, 150, 120, 25, "Set Directory"));
-        allButtons.add(selectPlaylistButton = new Button(420, 380, 140, 25, "select Playlist"));
-        allButtons.add(shuffleButton = new Button(570, 380, 90, 25, "shuffle"));
+        this.addButtons();
+        this.setButtonFunctionality();        
+    }
 
-        //Set Button functionality
+    public static GuiFactory getGuiFactory(){
+        return guiFactory == null ? guiFactory = new GuiFactory() : guiFactory;
+    }
+
+    public List<Button> getAllButtons() {
+        return allButtons;
+    }
+
+    private void addButtons(){
+        allButtons.add(startStopButton = new Button(180, 350, 70, 25, "start"));
+        allButtons.add(skipButton = new Button(280, 350, 70, 25, "skip"));
+        allButtons.add(repeatButton = new Button(250, 280, 90, 25, "repeat"));
+        allButtons.add(lastSongButton = new Button(360, 280, 130, 25, "lastSong"));
+        allButtons.add(setDirectoryButton = new Button(250, 120, 120, 25, "Set Directory"));
+        allButtons.add(selectPlaylistButton = new Button(420, 360, 140, 25, "select Playlist"));
+        allButtons.add(shuffleButton = new Button(570, 360, 90, 25, "shuffle"));
+    }
+
+    //Set Button functionality
+    private void setButtonFunctionality(){
+
+        //Start-Stop Button
         startStopButton.getButton().addActionListener(e -> {
             if(!startStopSwitch){
                 try{
                     PlayOptions.getPlayOptions().startSong();
-                    allButtons.add(0, startStopButton = new Button(250, 380, 70, 25, "stop"));
+                    allButtons.add(0, startStopButton = new Button(180, 350, 70, 25, "stop"));
+                    this.setButtonFunctionality();
                 }catch(NullPointerException err){ //Das mit dem Button funktioniert noch nicht..
                     return;
                 }
             }else{
                 PlayOptions.getPlayOptions().stopSong();
-                allButtons.add(0,startStopButton = new Button(250, 380, 70, 25, "start"));
+                allButtons.add(0,startStopButton = new Button(180, 350, 70, 25, "start"));
+                this.setButtonFunctionality();
             }
-            startStopSwitch = !startStopSwitch;            
+            startStopSwitch = !startStopSwitch;  
+            ClientMaske.getClientMaske().update();
         });
 
+        //Skip Button
         skipButton.getButton().addActionListener(e -> {
             PlayOptions.getPlayOptions().skipSong();
         });
 
+        //Repeat Button
         repeatButton.getButton().addActionListener(e -> {
             PlayOptions.getPlayOptions().repeatSong();
         });
 
+        //Last Song Button
         lastSongButton.getButton().addActionListener(e -> {
             PlayOptions.getPlayOptions().lastSong();
         });
 
+        //Set Directory Button
         setDirectoryButton.getButton().addActionListener(e -> {
             try{
                 JFileChooser chooser = new JFileChooser();
@@ -82,6 +102,7 @@ public class GuiFactory {
             }
         });
 
+        //Select Playlist Button
         selectPlaylistButton.getButton().addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
                 BoxSelectorMaske boxSelectorMaske = new BoxSelectorMaske(PlayOptions.getPlayOptions().getPlaylistNames());
@@ -90,17 +111,9 @@ public class GuiFactory {
             });
         });
 
+        //Shuffle Button
         shuffleButton.getButton().addActionListener(e -> {
             PlayOptions.getPlayOptions().shuffleSwitch();
         });
-        
-    }
-
-    public static GuiFactory getGuiFactory(){
-        return guiFactory == null ? guiFactory = new GuiFactory() : guiFactory;
-    }
-
-    public List<Button> getAllButtons() {
-        return allButtons;
     }
 }
