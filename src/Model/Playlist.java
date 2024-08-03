@@ -1,4 +1,4 @@
-package newImplement;
+package Model;
 
 import java.io.File;
 
@@ -28,7 +28,7 @@ public class Playlist{
     }
 
     public SongRecord getNextSongInLine(){
-        return addToQueue(++pointer >= listOfSongs.size() ? listOfSongs.get(pointer = 0): listOfSongs.get(pointer));
+        return addToQueue(++pointer >= listOfSongs.size() ? listOfSongs.get(pointer = 0) : listOfSongs.get(pointer));
     }
 
     public SongRecord getCurrentSongRepeat(){

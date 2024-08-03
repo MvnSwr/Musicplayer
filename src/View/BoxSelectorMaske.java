@@ -1,9 +1,12 @@
-package newImplement;
+package View;
 
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
+import Controller.PlayOptions;
+
 import java.awt.FlowLayout;
 
 import java.util.List;
@@ -29,7 +32,10 @@ public class BoxSelectorMaske extends JFrame{
                 PlayOptions.getPlayOptions().setCurrentPlaylist(choosenElement);
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Please select a Item first.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(  this, 
+                                                "Please select a Item first.", 
+                                                "Error", 
+                                                JOptionPane.ERROR_MESSAGE);
             }
         });
 

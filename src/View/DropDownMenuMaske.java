@@ -1,17 +1,17 @@
-package newImplement;
+package View;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import Controller.PlayOptions;
+
 public class DropDownMenuMaske {
 
-    public static JMenuBar createMenu() {
-        // Menüleiste erstellen
+    public JMenuBar createMenu() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Options");
 
-        // Menüeinträge erstellen
         JMenuItem safeButton = new JMenuItem("Save Music");
         JMenuItem deleteButton = new JMenuItem("Delete Cache");
 
@@ -23,12 +23,10 @@ public class DropDownMenuMaske {
             PlayOptions.getPlayOptions().deleteSafedCache();
         });
 
-        // Menüeinträge zum Menü hinzufügen
         menu.add(safeButton);
-        menu.addSeparator(); // Trennlinie zwischen Menüeinträgen hinzufügen
+        menu.addSeparator();
         menu.add(deleteButton);
 
-        // Menü zur Menüleiste hinzufügen
         menuBar.add(menu);
 
         return menuBar;

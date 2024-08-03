@@ -1,4 +1,4 @@
-package newImplement;
+package Controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import Model.Playlist;
 
 public class PlayOptions{
     
@@ -36,7 +38,6 @@ public class PlayOptions{
     }
 
     //Läuft über Buttonaufruf
-    //ALLES TODO
     public void startSong(){
         if(clip == null){
             this.loadSong();
@@ -62,7 +63,8 @@ public class PlayOptions{
                 this.stopSong();
                 clip.close();
             }
-            clip.open(AudioSystem.getAudioInputStream(new File(currentPlayList.getCurrentSongRepeat().title())));
+            clip.open(AudioSystem.getAudioInputStream(
+                        new File(currentPlayList.getCurrentSongRepeat().title())));
             this.startSong();
         }catch(NullPointerException e){
         }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
@@ -76,7 +78,8 @@ public class PlayOptions{
                 this.stopSong();
                 clip.close();
             }
-            clip.open(AudioSystem.getAudioInputStream(new File(currentPlayList.getLastSong().title())));
+            clip.open(AudioSystem.getAudioInputStream(
+                        new File(currentPlayList.getLastSong().title())));
             this.startSong();
         }catch(NullPointerException e){
         }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
@@ -94,7 +97,6 @@ public class PlayOptions{
         
     }
 
-    //Ende ToDo
     public void shuffleSwitch(){
         isOnShuffle = !isOnShuffle;
     }
@@ -125,8 +127,10 @@ public class PlayOptions{
     private void loadSong(){
         try{
             AudioInputStream audioStream = 
-                            isOnShuffle == true ? AudioSystem.getAudioInputStream(new File(currentPlayList.getRandomSong().title())) 
-                                                : AudioSystem.getAudioInputStream(new File(currentPlayList.getNextSongInLine().title()));
+                            isOnShuffle == true ? AudioSystem.getAudioInputStream(
+                                                    new File(currentPlayList.getRandomSong().title())) 
+                                                : AudioSystem.getAudioInputStream(
+                                                    new File(currentPlayList.getNextSongInLine().title()));
             clip = AudioSystem.getClip();
             clip.open(audioStream);
         }catch(UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -156,7 +160,7 @@ public class PlayOptions{
         }
     }
 
-    protected void safe(){
+    public void safe(){
         try{
             FileOutputStream fos = new FileOutputStream("Cache.tmp");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -180,7 +184,7 @@ public class PlayOptions{
 
     }
 
-    protected void deleteSafedCache(){
+    public void deleteSafedCache(){
         File file = new File("Cache.tmp");
         if(file.exists()){
             file.delete();
