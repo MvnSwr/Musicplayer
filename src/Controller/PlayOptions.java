@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import Model.CustomPlayerImpl;
 import Model.Player;
@@ -26,17 +24,19 @@ public class PlayOptions{
     private MusicUpdateThread updateThread;
 
     public PlayOptions(){
-        try{
-            this.load();
-        }catch(ClassNotFoundException e){
-        }catch(IOException e) {
-            //Hier ein PopUp das des Laden nicht funktioniert hat
-            e.printStackTrace();
-        }
+        ExceptionHandler.handleException(
+            () -> {
+                this.load(); //Hier ein PopUp das des Laden nicht funktioniert hat (IOException)
+                return null;
+            }
+        );
     }
 
     public static PlayOptions getPlayOptions(){ //Singelton
-        return playOptions == null ? playOptions = new PlayOptions() : playOptions;
+        if(playOptions == null){
+            playOptions = new PlayOptions();
+        }
+        return playOptions;
     }
 
     //Läuft über Buttonaufruf
@@ -52,46 +52,48 @@ public class PlayOptions{
     public void stopSong(){
         clip.stop();
         updateThread.stopRunning();
-        try{
-            updateThread.join();
-        }catch(InterruptedException e){
-            //nothing to see here
-        }
+
+        ExceptionHandler.handleException(
+            () -> {
+                updateThread.join();
+                return null;
+            }
+        );
     }
 
     public void repeatSong(){
-        try{
-            this.stopIfClipIsOpen();
-
-            clip.open(AudioSystem.getAudioInputStream(
+        ExceptionHandler.handleException(
+            () -> {
+                this.stopIfClipIsOpen();
+                clip.open(AudioSystem.getAudioInputStream(
                         new File(currentPlayList.getCurrentSongRepeat().title())));
-            this.startSong();
-        }catch(NullPointerException e){
-        }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
-            e.printStackTrace();
-        }
+                this.startSong();
+                return null;
+            }
+        );
     }
 
     public void lastSong(){
-        try{
-            this.stopIfClipIsOpen();
-            
-            clip.open(AudioSystem.getAudioInputStream(
+        ExceptionHandler.handleException(
+            () -> {
+                this.stopIfClipIsOpen();
+                clip.open(AudioSystem.getAudioInputStream(
                         new File(currentPlayList.getLastSong().title())));
-            this.startSong();
-        }catch(NullPointerException e){
-        }catch(LineUnavailableException | IOException | UnsupportedAudioFileException e){
-            e.printStackTrace();
-        }
+                this.startSong();
+                return null;
+            }
+        );
     }
 
     public void skipSong(){
-        try{
-            this.stopSong();
-            this.loadSong();
-            this.startSong();
-        }catch(NullPointerException e){
-        }   
+        ExceptionHandler.handleException(
+            () -> {
+                this.stopSong();
+                this.loadSong();
+                this.startSong();
+                return null;
+            }
+        );
     }
 
     public void shuffleSwitch(){
@@ -113,7 +115,9 @@ public class PlayOptions{
         });
 
         if(this.clip != null){ // stop the playback if the playlist is changed
-            GuiFactory.getGuiFactory().simulateStopButtonPress();
+            if(clip.isActive()){
+                GuiFactory.getGuiFactory().simulateStopButtonPress();
+            }
             clip = null;
         }
     }
@@ -127,17 +131,18 @@ public class PlayOptions{
     }
 
     private void loadSong(){
-        try{
-            AudioInputStream audioStream = 
-                            isOnShuffle == true ? AudioSystem.getAudioInputStream(
-                                                    new File(currentPlayList.getRandomSong().title())) 
-                                                : AudioSystem.getAudioInputStream(
-                                                    new File(currentPlayList.getNextSongInLine().title()));
-            clip = new CustomPlayerImpl();
-            clip.open(audioStream);
-        }catch(UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
+        ExceptionHandler.handleException(
+            () -> {
+                AudioInputStream audioStream = 
+                isOnShuffle == true ? AudioSystem.getAudioInputStream(
+                                        new File(currentPlayList.getRandomSong().title())) 
+                                    : AudioSystem.getAudioInputStream(
+                                        new File(currentPlayList.getNextSongInLine().title()));
+                clip = new CustomPlayerImpl();
+                clip.open(audioStream);
+                return null;
+            }
+        );
     }
 
     private void setPlaylists(){

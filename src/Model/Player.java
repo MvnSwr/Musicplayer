@@ -13,4 +13,5 @@ public interface Player{
     void close();
     long getMicrosecondPosition();
     long getMicrosecondLength();
+    boolean isActive();
 }

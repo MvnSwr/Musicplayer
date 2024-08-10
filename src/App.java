@@ -8,7 +8,8 @@ public class App {
     }
     //TODO SoundCloud und Spotify integration
     // SoundCloud integration durch automatisiertes Downloaden?
-    //TODO load und safe soll für den lokalen Pfad funktionieren
     //TODO alles etwas schöner machen
-    //TODO gerne den start Stop Button schneller machen
+    //TODO Ich will wissen welche Playlist und welcher Song läuft
+    //TODO es soll merkbar sein ob der Shuffle gerade an oder aus ist
+    //TODO Problem beheben das manchmal einfach eine zweite Instanz der Gui erzeugt wird
 }

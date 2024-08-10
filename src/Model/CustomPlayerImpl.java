@@ -49,4 +49,8 @@ public class CustomPlayerImpl implements Player{
         return clip.getMicrosecondLength();
     }
     
+    @Override
+    public boolean isActive(){
+        return clip.isActive();
+    }
 }
