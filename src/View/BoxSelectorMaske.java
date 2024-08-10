@@ -44,8 +44,4 @@ public class BoxSelectorMaske extends JFrame{
         this.add(accept);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
-
-    public String getchoosenElement(){
-        return choosenElement != null ? choosenElement : "";
-    }
 }

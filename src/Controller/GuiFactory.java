@@ -35,7 +35,7 @@ public class GuiFactory {
         initializeGui();
     }
 
-    public static GuiFactory getGuiFactory(){
+    public static GuiFactory getGuiFactory(){ //Singelton
         if (guiFactory == null) {
             guiFactory = new GuiFactory();
         }
@@ -142,6 +142,10 @@ public class GuiFactory {
             stopButton.getButton().setVisible(isStartVisible);
             ClientMaske.getClientMaske().updateButtons();
         });
+    }
+
+    protected void simulateStopButtonPress(){
+        this.handleStopButtonPress();
     }
 
     public DropDownMenuMaske getDropDownMenu(){

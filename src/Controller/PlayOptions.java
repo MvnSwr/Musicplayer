@@ -2,21 +2,17 @@ package Controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import Model.CustomPlayerImpl;
+import Model.Player;
 import Model.Playlist;
 
 public class PlayOptions{
@@ -24,16 +20,22 @@ public class PlayOptions{
     private static PlayOptions playOptions;
     private List<Playlist> playlists;
     private Playlist currentPlayList;
-    private String directory; // full path to the musicdirectories incl. "/"
-    private Clip clip;
+    private String directory = ""; // full path to the musicdirectories incl. "/"
+    private Player clip;
     private Boolean isOnShuffle = false;
     private MusicUpdateThread updateThread;
 
     public PlayOptions(){
-        //this.load();
+        try{
+            this.load();
+        }catch(ClassNotFoundException e){
+        }catch(IOException e) {
+            //Hier ein PopUp das des Laden nicht funktioniert hat
+            e.printStackTrace();
+        }
     }
 
-    public static PlayOptions getPlayOptions(){
+    public static PlayOptions getPlayOptions(){ //Singelton
         return playOptions == null ? playOptions = new PlayOptions() : playOptions;
     }
 
@@ -59,10 +61,8 @@ public class PlayOptions{
 
     public void repeatSong(){
         try{
-            if(clip.isOpen()){
-                this.stopSong();
-                clip.close();
-            }
+            this.stopIfClipIsOpen();
+
             clip.open(AudioSystem.getAudioInputStream(
                         new File(currentPlayList.getCurrentSongRepeat().title())));
             this.startSong();
@@ -74,10 +74,8 @@ public class PlayOptions{
 
     public void lastSong(){
         try{
-            if(clip.isOpen()){
-                this.stopSong();
-                clip.close();
-            }
+            this.stopIfClipIsOpen();
+            
             clip.open(AudioSystem.getAudioInputStream(
                         new File(currentPlayList.getLastSong().title())));
             this.startSong();
@@ -93,8 +91,7 @@ public class PlayOptions{
             this.loadSong();
             this.startSong();
         }catch(NullPointerException e){
-        }
-        
+        }   
     }
 
     public void shuffleSwitch(){
@@ -114,6 +111,11 @@ public class PlayOptions{
                 currentPlayList = e;
             }
         });
+
+        if(this.clip != null){ // stop the playback if the playlist is changed
+            GuiFactory.getGuiFactory().simulateStopButtonPress();
+            clip = null;
+        }
     }
 
     public List<String> getPlaylistNames(){
@@ -131,7 +133,7 @@ public class PlayOptions{
                                                     new File(currentPlayList.getRandomSong().title())) 
                                                 : AudioSystem.getAudioInputStream(
                                                     new File(currentPlayList.getNextSongInLine().title()));
-            clip = AudioSystem.getClip();
+            clip = new CustomPlayerImpl();
             clip.open(audioStream);
         }catch(UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
@@ -151,6 +153,13 @@ public class PlayOptions{
         }
     }
 
+    private void stopIfClipIsOpen(){
+        if(clip.isOpen()){
+            this.stopSong();
+            clip.close();
+        }
+    }
+
     protected void update(){
         System.out.println(clip.getMicrosecondPosition() + " von " + clip.getMicrosecondLength());
         if(clip.getMicrosecondPosition() == clip.getMicrosecondLength()){
@@ -161,33 +170,14 @@ public class PlayOptions{
     }
 
     public void safe(){
-        try{
-            FileOutputStream fos = new FileOutputStream("Cache.tmp");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(playOptions);
-            oos.close();
-        }catch(NotSerializableException e){
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        DatabaseHandler.safe(directory);
     }
 
-    private void load(){
-        try {
-            FileInputStream fis = new FileInputStream("Cache.tmp");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            playOptions = (PlayOptions) ois.readObject();
-            ois.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+    private void load() throws IOException, ClassNotFoundException{
+        this.setDirectory(DatabaseHandler.load());
     }
 
     public void deleteSafedCache(){
-        File file = new File("Cache.tmp");
-        if(file.exists()){
-            file.delete();
-        }
+        DatabaseHandler.deleteSafedCache();
     }
 }
