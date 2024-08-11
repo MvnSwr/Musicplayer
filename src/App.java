@@ -7,7 +7,7 @@ public class App {
     public static void main(String[] args){
         SwingUtilities.invokeLater( //Every Gui change has to be done in the AWT-Thread
             () ->{
-                ClientMaske.getClientMaske();
+                ClientMaske.getClientMaske().setVisible(true);
             }
         );
         

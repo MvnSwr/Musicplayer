@@ -10,7 +10,17 @@ public class Button{
     public JButton getButton(){
         return this.button;
     }
+
+    public Button(String name){
+        this(name, true);
+    }
+
+    public Button(String name, boolean visibility){
+        button = new JButton(name);
+        button.setVisible(visibility);
+    }
     
+    //For manual positioning of the buttons
     public Button(int x, int y, int width, int height){
         this(x, y, width, height, "Standard");
     }

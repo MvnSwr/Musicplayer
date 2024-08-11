@@ -1,10 +1,14 @@
 package Controller;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Model.Button;
@@ -22,7 +26,6 @@ public class GuiFactory {
     private Button stopButton;
     private Button skipButton;
     private Button repeatButton;
-    private Button lastSongButton; // doppelt belegen und erst ab einer gewissen audiolength erst den letzten song spielen, sonst einfach repeat song
     private Button setDirectoryButton;
     private Button selectPlaylistButton;
     private Button shuffleButton;
@@ -43,8 +46,8 @@ public class GuiFactory {
 
     private void initializeGui() {
         SwingUtilities.invokeLater(() -> {
-            GuiFactory.getGuiFactory().createButtons();
-            GuiFactory.getGuiFactory().setButtonFunctionality();
+            createButtons();
+            setButtonFunctionality();
             ClientMaske.getClientMaske().updateButtons();
         });
     }
@@ -58,29 +61,27 @@ public class GuiFactory {
     }
 
     private void createButtons(){
-        startButton = new Button(180, 350, 70, 25, "start").addButton();
-        stopButton = new Button(180, 350, 70, 25, "stop", false).addButton();
-        skipButton = new Button(280, 350, 70, 25, "skip").addButton();
-        repeatButton = new Button(250, 280, 90, 25, "repeat").addButton();
-        lastSongButton = new Button(360, 280, 130, 25, "lastSong").addButton();
-        setDirectoryButton = new Button(250, 120, 120, 25, "Set Directory").addButton();
-        selectPlaylistButton = new Button(420, 360, 140, 25, "select Playlist").addButton();
-        shuffleButton = new Button(570, 360, 90, 25, "shuffle").addButton();
+        startButton = new Button("start").addButton();
+        stopButton = new Button("stop", false).addButton();
+        skipButton = new Button("skip").addButton();
+        repeatButton = new Button( "repeat").addButton();
+        setDirectoryButton = new Button( "Set Directory").addButton();
+        selectPlaylistButton = new Button("select Playlist").addButton();
+        shuffleButton = new Button( "shuffle").addButton();
     }
 
     //Set Button functionality
-    private void setButtonFunctionality() {
+    private void setButtonFunctionality(){
         startButton.getButton().addActionListener(e -> handleStartButtonPress());
         stopButton.getButton().addActionListener(e -> handleStopButtonPress());
         skipButton.getButton().addActionListener(e -> PlayOptions.getPlayOptions().skipSong());
         repeatButton.getButton().addActionListener(e -> PlayOptions.getPlayOptions().repeatSong());
-        lastSongButton.getButton().addActionListener(e -> PlayOptions.getPlayOptions().lastSong());
         setDirectoryButton.getButton().addActionListener(e -> handleSetDirectoryButtonPress());
         selectPlaylistButton.getButton().addActionListener(e -> handleSelectPlaylistButtonPress());
         shuffleButton.getButton().addActionListener(e -> PlayOptions.getPlayOptions().shuffleSwitch());
     }
 
-    private void handleStartButtonPress() {
+    private void handleStartButtonPress(){
         ExceptionHandler.handleException(
             () -> {
                 PlayOptions.getPlayOptions().startSong();
@@ -90,12 +91,12 @@ public class GuiFactory {
         );
     }
 
-    private void handleStopButtonPress() {
+    private void handleStopButtonPress(){
         PlayOptions.getPlayOptions().stopSong();
         switchStartStopButton();
     }
 
-    private void handleSetDirectoryButtonPress() {
+    private void handleSetDirectoryButtonPress(){
         ExceptionHandler.handleException(
             () -> {
                 SwingUtilities.invokeLater(
@@ -116,7 +117,7 @@ public class GuiFactory {
         );
     }
 
-    private void handleSelectPlaylistButtonPress() {
+    private void handleSelectPlaylistButtonPress(){
         SwingUtilities.invokeLater(() -> {
             BoxSelectorMaske boxSelectorMaske = new BoxSelectorMaske(PlayOptions.getPlayOptions().getPlaylistNames());
             boxSelectorMaske.setSize(300, 200);
@@ -124,13 +125,13 @@ public class GuiFactory {
         });
     }
 
-    private void switchStartStopButton() {
-        SwingUtilities.invokeLater(() -> {
-            boolean isStartVisible = startButton.getButton().isVisible();
-            startButton.getButton().setVisible(!isStartVisible);
-            stopButton.getButton().setVisible(isStartVisible);
-            ClientMaske.getClientMaske().updateButtons();
-        });
+    private void switchStartStopButton(){
+        boolean isStartVisible = startButton.getButton().isVisible();
+        startButton.getButton().setVisible(!isStartVisible);
+        stopButton.getButton().setVisible(isStartVisible);
+
+        startButton.getButton().repaint();
+        stopButton.getButton().repaint();
     }
 
     protected void simulateStopButtonPress(){
@@ -139,5 +140,48 @@ public class GuiFactory {
 
     public DropDownMenuMaske getDropDownMenu(){
         return dropDownMenuMaske;
+    }
+
+    public List<Object> setButtonsInClientMaske() {
+        List<Object> buttonPanelsWithConstrains = new ArrayList<>();
+
+        JPanel settingButtons = createPanelWithButtons( new FlowLayout(FlowLayout.LEFT, 10, 10),
+                                                        setDirectoryButton,
+                                                        selectPlaylistButton);
+
+        JPanel playbackButtons = createPanelWithButtons(new FlowLayout(FlowLayout.CENTER, 10, 10),
+                                                        repeatButton,
+                                                        startButton,
+                                                        stopButton,
+                                                        skipButton);
+
+        JPanel playbackOption = createPanelWithButtons( new FlowLayout(FlowLayout.RIGHT, 10, 10),
+                                                        shuffleButton);
+
+        JPanel combinedPanel = createCombinedPanel(playbackButtons, playbackOption);
+
+        buttonPanelsWithConstrains.add(settingButtons);
+        buttonPanelsWithConstrains.add(BorderLayout.NORTH);
+
+        buttonPanelsWithConstrains.add(combinedPanel);
+        buttonPanelsWithConstrains.add(BorderLayout.SOUTH);
+
+        return buttonPanelsWithConstrains;
+    }
+
+    private JPanel createPanelWithButtons(LayoutManager layout, Button... buttons) {
+        JPanel panel = new JPanel(layout);
+        
+        for (Button button : buttons) {
+            panel.add(button.getButton());
+        }
+        return panel;
+    }
+
+    private JPanel createCombinedPanel(JPanel centerPanel, JPanel eastPanel) {
+        JPanel combinedPanel = new JPanel(new BorderLayout());
+        combinedPanel.add(centerPanel, BorderLayout.CENTER);
+        combinedPanel.add(eastPanel, BorderLayout.EAST);
+        return combinedPanel;
     }
 }

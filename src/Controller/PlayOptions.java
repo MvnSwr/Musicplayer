@@ -12,6 +12,7 @@ import javax.sound.sampled.AudioSystem;
 import Model.CustomPlayerImpl;
 import Model.Player;
 import Model.Playlist;
+import View.ClientMaske;
 
 public class PlayOptions{
     
@@ -66,6 +67,10 @@ public class PlayOptions{
     public void repeatSong(){
         ExceptionHandler.handleException(
             () -> {
+                if(clip.getMicrosecondPosition() < 2500000){
+                    this.lastSong();
+                }
+
                 this.stopIfClipIsOpen();
                 clip.open(AudioSystem.getAudioInputStream(
                         new File(currentPlayList.getCurrentSongRepeat().title())));
@@ -78,10 +83,12 @@ public class PlayOptions{
     public void lastSong(){
         ExceptionHandler.handleException(
             () -> {
+                String title = currentPlayList.getLastSong().title();
                 this.stopIfClipIsOpen();
                 clip.open(AudioSystem.getAudioInputStream(
-                        new File(currentPlayList.getLastSong().title())));
+                        new File(title)));
                 this.startSong();
+                this.buildSubstringForTitle(title);
                 return null;
             }
         );
@@ -135,16 +142,25 @@ public class PlayOptions{
     private void loadSong(){
         ExceptionHandler.handleException(
             () -> {
+                String title;
                 AudioInputStream audioStream = 
                 isOnShuffle == true ? AudioSystem.getAudioInputStream(
-                                        new File(currentPlayList.getRandomSong().title())) 
+                                        new File(title = currentPlayList.getRandomSong().title())) 
                                     : AudioSystem.getAudioInputStream(
-                                        new File(currentPlayList.getNextSongInLine().title()));
+                                        new File(title = currentPlayList.getNextSongInLine().title()));
                 clip = new CustomPlayerImpl();
                 clip.open(audioStream);
+
+                this.buildSubstringForTitle(title);
                 return null;
             }
         );
+    }
+
+    private void buildSubstringForTitle(String path){
+        // Erstellung des Substrings um den Titel anzuzeigen
+        path = path.substring(path.lastIndexOf('\\') + 1, path.indexOf(".wav"));
+        ClientMaske.getClientMaske().updateDisplayedText(path);
     }
 
     private void setPlaylists(){
