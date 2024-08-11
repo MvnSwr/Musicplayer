@@ -1,10 +1,16 @@
 
 
 import View.ClientMaske;
+import javax.swing.SwingUtilities;
 
 public class App {
     public static void main(String[] args){
-        ClientMaske.getClientMaske();
+        SwingUtilities.invokeLater( //Every Gui change has to be done in the AWT-Thread
+            () ->{
+                ClientMaske.getClientMaske();
+            }
+        );
+        
     }
     //TODO SoundCloud und Spotify integration
     // SoundCloud integration durch automatisiertes Downloaden?

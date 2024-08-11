@@ -26,7 +26,9 @@ public class PlayOptions{
     public PlayOptions(){
         ExceptionHandler.handleException(
             () -> {
-                this.load(); //Hier ein PopUp das des Laden nicht funktioniert hat (IOException)
+                if(new File("Cache.tmp").exists()){
+                    this.load(); //Hier ein PopUp das des Laden nicht funktioniert hat (IOException)
+                }
                 return null;
             }
         );

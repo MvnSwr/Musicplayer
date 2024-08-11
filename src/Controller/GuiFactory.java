@@ -1,7 +1,6 @@
 package Controller;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,28 +42,11 @@ public class GuiFactory {
     }
 
     private void initializeGui() {
-        Runnable initialize = () -> {
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    try {
-                        createButtons();
-                        setButtonFunctionality();
-                        ClientMaske.getClientMaske().updateButtons();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.err.println("Error during GUI initialization: " + e.getMessage());
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.err.println("Initialization interrupted: " + e.getMessage());
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-                System.err.println("InvocationTargetException: " + e.getCause());
-            }
-        };
-        Thread initThread = new Thread(initialize);
-        initThread.start();
+        SwingUtilities.invokeLater(() -> {
+            GuiFactory.getGuiFactory().createButtons();
+            GuiFactory.getGuiFactory().setButtonFunctionality();
+            ClientMaske.getClientMaske().updateButtons();
+        });
     }
 
     public void addButton(Button button){
@@ -99,11 +81,13 @@ public class GuiFactory {
     }
 
     private void handleStartButtonPress() {
-        try{
-            PlayOptions.getPlayOptions().startSong();
-            switchStartStopButton();
-        }catch(NullPointerException e){
-        }
+        ExceptionHandler.handleException(
+            () -> {
+                PlayOptions.getPlayOptions().startSong();
+                switchStartStopButton();
+                return null;
+            }
+        );
     }
 
     private void handleStopButtonPress() {
@@ -112,19 +96,24 @@ public class GuiFactory {
     }
 
     private void handleSetDirectoryButtonPress() {
-        try {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setAcceptAllFileFilterUsed(true);
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setCurrentDirectory(new File("C:/"));
-
-            int result = chooser.showOpenDialog(null);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                PlayOptions.getPlayOptions().setDirectory(chooser.getSelectedFile().getAbsolutePath() + "/");
+        ExceptionHandler.handleException(
+            () -> {
+                SwingUtilities.invokeLater(
+                    () -> {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setAcceptAllFileFilterUsed(true);
+                        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                        chooser.setCurrentDirectory(new File("C:/"));
+            
+                        int result = chooser.showOpenDialog(null);
+                        if (result == JFileChooser.APPROVE_OPTION) {
+                            PlayOptions.getPlayOptions().setDirectory(chooser.getSelectedFile().getAbsolutePath() + "/");
+                        }
+                    }
+                );
+                return null;
             }
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
+        );
     }
 
     private void handleSelectPlaylistButtonPress() {

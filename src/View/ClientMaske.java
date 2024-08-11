@@ -3,6 +3,7 @@ package View;
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import Controller.GuiFactory;
 
@@ -17,7 +18,9 @@ public class ClientMaske extends JFrame{
 		this.setResizable(false);
 		this.setLayout(null);
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Hier Lambda für das Speichern der Playlists etc.?!
+        this.updateDisplayedText();
+
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(new Color(0x82A3AC));
         this.setJMenuBar(GuiFactory .getGuiFactory()
                                     .getDropDownMenu()
@@ -25,7 +28,10 @@ public class ClientMaske extends JFrame{
     }
 
     public static ClientMaske getClientMaske(){
-        return clientMaske == null ? clientMaske = new ClientMaske() : clientMaske;
+        if(clientMaske == null){
+            clientMaske = new ClientMaske();
+        }
+        return clientMaske;
     }
 
     public void updateButtons(){
@@ -35,6 +41,13 @@ public class ClientMaske extends JFrame{
                         this.add(e.getButton());
                     });
         
+        this.setVisible(true);
+    }
+
+    public void updateDisplayedText(){
+        JLabel label = new JLabel("My Label ajisudaisdiad", JLabel.CENTER);
+        this.add(label);
+
         this.setVisible(true);
     }
 }
