@@ -30,6 +30,9 @@ public class GuiFactory {
     private Button selectPlaylistButton;
     private Button shuffleButton;
 
+    // private JLabel songTitleLabel;
+    // private JLabel shuffleLabel;
+
     public GuiFactory(){
         allButtons = new ArrayList<>();
         dropDownMenuMaske = new DropDownMenuMaske();
@@ -48,7 +51,10 @@ public class GuiFactory {
         SwingUtilities.invokeLater(() -> {
             createButtons();
             setButtonFunctionality();
-            ClientMaske.getClientMaske().updateButtons();
+            setButtonsInClientMaske();
+
+            // createLabels();
+            // setLabelsInClientMaske();
         });
     }
 
@@ -69,6 +75,11 @@ public class GuiFactory {
         selectPlaylistButton = new Button("select Playlist").addButton();
         shuffleButton = new Button( "shuffle").addButton();
     }
+
+    // private void createLabels(){
+    //     songTitleLabel = new JLabel(" ", JLabel.CENTER);
+    //     shuffleLabel = new JLabel("shuffle is off", JLabel.CENTER);
+    // }
 
     //Set Button functionality
     private void setButtonFunctionality(){
@@ -142,9 +153,7 @@ public class GuiFactory {
         return dropDownMenuMaske;
     }
 
-    public List<Object> setButtonsInClientMaske() {
-        List<Object> buttonPanelsWithConstrains = new ArrayList<>();
-
+    private void setButtonsInClientMaske() {
         JPanel settingButtons = createPanelWithButtons( new FlowLayout(FlowLayout.LEFT, 10, 10),
                                                         setDirectoryButton,
                                                         selectPlaylistButton);
@@ -160,13 +169,9 @@ public class GuiFactory {
 
         JPanel combinedPanel = createCombinedPanel(playbackButtons, playbackOption);
 
-        buttonPanelsWithConstrains.add(settingButtons);
-        buttonPanelsWithConstrains.add(BorderLayout.NORTH);
 
-        buttonPanelsWithConstrains.add(combinedPanel);
-        buttonPanelsWithConstrains.add(BorderLayout.SOUTH);
-
-        return buttonPanelsWithConstrains;
+        ClientMaske.getClientMaske().addElement(settingButtons, BorderLayout.NORTH);
+        ClientMaske.getClientMaske().addElement(combinedPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createPanelWithButtons(LayoutManager layout, Button... buttons) {
@@ -178,10 +183,20 @@ public class GuiFactory {
         return panel;
     }
 
-    private JPanel createCombinedPanel(JPanel centerPanel, JPanel eastPanel) {
+    private JPanel createCombinedPanel(JPanel centerPanel, JPanel eastPanel) { //noch generischer machen?
         JPanel combinedPanel = new JPanel(new BorderLayout());
         combinedPanel.add(centerPanel, BorderLayout.CENTER);
         combinedPanel.add(eastPanel, BorderLayout.EAST);
         return combinedPanel;
     }
+
+    // private void setLabelsInClientMaske(){
+    //     ClientMaske.getClientMaske().addElement(songTitleLabel, BorderLayout.NORTH);
+    //     ClientMaske.getClientMaske().addElement(shuffleLabel, BorderLayout.NORTH);
+    // }
+
+    // public void updateLabel(String text){
+    //     songTitleLabel.setText(text);
+    //     ClientMaske.getClientMaske().addElement(songTitleLabel, BorderLayout.NORTH);
+    // }
 }

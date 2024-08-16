@@ -3,7 +3,6 @@ package View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,6 +29,8 @@ public class ClientMaske extends JFrame{
         this.setJMenuBar(GuiFactory .getGuiFactory()
                                     .getDropDownMenu()
                                     .createMenu());
+        
+        
     }
 
     public static ClientMaske getClientMaske(){
@@ -39,17 +40,16 @@ public class ClientMaske extends JFrame{
         return clientMaske;
     }
 
-    public void updateButtons(){
-        List<Object> buttonAndConstrainTouple = GuiFactory.getGuiFactory().setButtonsInClientMaske();
-        while(!buttonAndConstrainTouple.isEmpty()){
-            this.add((Component) buttonAndConstrainTouple.remove(0),
-                     buttonAndConstrainTouple.remove(0));
-        }
+    public void addElement(Component comp, Object constr){
+        this.add(comp, constr);
+        this.revalidate();
+        this.repaint();
     }
 
     public void updateDisplayedText(String text){
         SwingUtilities.invokeLater(
             () -> {
+                // GuiFactory.getGuiFactory().updateLabel(text);
                 displayLabel.setText(text);
                 this.revalidate();
                 this.repaint();

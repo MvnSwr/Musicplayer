@@ -123,7 +123,7 @@ public class PlayOptions{
             }
         });
 
-        if(this.clip != null){ // stop the playback if the playlist is changed
+        if(this.clip != null){ // stops the playback if the playlist is changed
             if(clip.isActive()){
                 GuiFactory.getGuiFactory().simulateStopButtonPress();
             }
